@@ -1,16 +1,16 @@
 ---
-- name: clone
+- name: clone {{ repo_clone }}
   git:
     repo: 'https://github.com/{{ repo_user }}/{{ repo_clone }}_software.git'
     dest: '{{ pq_workspace }}/{{ repo_clone }}'
 
-- name: Creating folders for projects
+- name: Creating folders for projects {{ repo_clone }}
   file:
     path: '{{ pq_workspace }}/{{ repo_clone }}/ttc'
     state: directory
   when: repo_clone != "PQ9_bus"
 
-- name: Creating folders for projects
+- name: Creating folders for projects {{ repo_clone }}
   file:
     path: '{{ pq_workspace }}/{{ repo_clone }}/libs'
     state: directory

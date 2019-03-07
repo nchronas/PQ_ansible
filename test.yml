@@ -3,10 +3,7 @@
   vars:
     pq_workspace: "~/test_repo/"
     repo_user:  "nchronas"
-  tasks:
-  - name: clone subsystem repos
-    include_tasks: subsystems_clone.yml
-    with_items:
+    subsystems:
       - ADB
       - EPS
       - OBC
@@ -14,16 +11,54 @@
       - COMMS
       - MPP
       - PQ9_bus
-    loop_control:
-      loop_var: repo_clone
-
-  - name: clone sensor repos
-    include_tasks: sensors_clone.yml
-    with_items:
+    sensors:
       - INA226
       - TMP100
       - MB85RS256A
       - LTC2942
       - AD5235
+    conf:
+      - sen: INA226
+        sub:
+          - EPS
+          - OBC
+          - ADCS
+          - MPP
+          - ADB
+      - sen: TMP100
+        sub:
+          - EPS
+          - OBC
+          - ADCS
+          - MPP
+          - ADB
+      - sen: MB85RS256A
+        sub:
+          - OBC
+          - ADCS
+          - MPP
+      - sen: LTC2942
+        sub:
+          - EPS
+      - sen: AD5235
+        sub:
+          - MPP
+
+  tasks:
+  - name: clone subsystem repos
+    include_tasks: subsystems_clone.yml
+    with_items: '{{ subsystems }}'
     loop_control:
       loop_var: repo_clone
+
+  - name: clone sensor repos
+    include_tasks: sensors_clone.yml
+    with_items: '{{ sensors }}'
+    loop_control:
+      loop_var: repo_clone
+
+  - name: link sensors files
+    include_tasks: sensors_link.yml
+    with_items: '{{ conf }}'
+    loop_control:
+      loop_var: config
