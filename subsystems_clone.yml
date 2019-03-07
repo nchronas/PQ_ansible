@@ -1,0 +1,5 @@
+---
+- name: clone
+  git:
+    repo: 'https://github.com/{{ repo_user }}/{{ repo_clone }}_software.git'
+    dest: '{{ pq_workspace }}/{{ repo_clone }}'
