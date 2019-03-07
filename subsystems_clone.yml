@@ -3,3 +3,15 @@
   git:
     repo: 'https://github.com/{{ repo_user }}/{{ repo_clone }}_software.git'
     dest: '{{ pq_workspace }}/{{ repo_clone }}'
+
+- name: Creating folders for projects
+  file:
+    path: '{{ pq_workspace }}/{{ repo_clone }}/ttc'
+    state: directory
+  when: repo_clone != "PQ9_bus"
+
+- name: Creating folders for projects
+  file:
+    path: '{{ pq_workspace }}/{{ repo_clone }}/libs'
+    state: directory
+  when: repo_clone != "PQ9_bus"

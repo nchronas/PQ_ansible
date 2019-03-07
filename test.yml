@@ -16,6 +16,7 @@
       - PQ9_bus
     loop_control:
       loop_var: repo_clone
+
   - name: clone sensor repos
     include_tasks: sensors_clone.yml
     with_items:
