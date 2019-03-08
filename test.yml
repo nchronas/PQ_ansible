@@ -1,7 +1,7 @@
 - name: Setup up Delfi-PQ software
   hosts: all
   vars:
-    pq_workspace: "~/test_repo/"
+    pq_workspace: "~/delfi_PQ/"
     repo_user:  "nchronas"
     subsystems:
       - ADB
@@ -10,41 +10,46 @@
       - ADCS
       - COMMS
       - MPP
-      - PQ9_bus
     sensors:
       - INA226
       - TMP100
       - MB85RS256A
       - LTC2942
       - AD5235
-    conf:
-      - sen: INA226
-        sub:
+    sensor_configuration:
+      - sensor: INA226
+        subsystem:
           - EPS
           - OBC
           - ADCS
           - MPP
           - ADB
-      - sen: TMP100
-        sub:
+      - sensor: TMP100
+        subsystem:
           - EPS
           - OBC
           - ADCS
           - MPP
           - ADB
-      - sen: MB85RS256A
-        sub:
+      - sensor: MB85RS256A
+        subsystem:
           - OBC
           - ADCS
           - MPP
-      - sen: LTC2942
-        sub:
+      - sensor: LTC2942
+        subsystem:
           - EPS
-      - sen: AD5235
-        sub:
+      - sensor: AD5235
+        subsystem:
           - MPP
-
   tasks:
+  - name: clone main repo
+    include_tasks: subsystems_clone.yml
+    with_items:
+      - PQ9_bus
+    loop_control:
+      loop_var: repo_clone
+
   - name: clone subsystem repos
     include_tasks: subsystems_clone.yml
     with_items: '{{ subsystems }}'
@@ -57,8 +62,14 @@
     loop_control:
       loop_var: repo_clone
 
+  - name: link subsystem files
+    include_tasks: subsystems_link.yml
+    with_items: '{{ subsystems }}'
+    loop_control:
+      loop_var: subsystem
+
   - name: link sensors files
     include_tasks: sensors_link.yml
-    with_items: '{{ conf }}'
+    with_items: '{{ sensor_configuration }}'
     loop_control:
       loop_var: config

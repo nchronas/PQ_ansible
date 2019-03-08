@@ -1,0 +1,70 @@
+---
+- name: Link board files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/delfiPQ/{{ subsystem }}/HAL/{{ subsystem }}_Board.h'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/{{ subsystem }}_Board.h'
+    state: link
+    force: yes
+
+- name: Link board files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/delfiPQ/{{ subsystem }}/HAL/{{ subsystem }}_Board.c'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/{{ subsystem }}_Board.c'
+    state: link
+    force: yes
+
+- name: Link ttc osal files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/delfiPQ/OSAL/osal.c'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/ttc/osal.c'
+    state: link
+    force: yes
+
+- name: Link ttc satellite main files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/delfiPQ/{{ item }}.c'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/ttc/{{ item }}.c'
+    state: link
+    force: yes
+  with_items:
+    - packet_engine
+    - satellite
+    - PQ9_bus_engine
+
+- name: Link ttc satellite subsystem files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/delfiPQ/{{ subsystem }}/{{ item }}.c'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/ttc/{{ item }}.c'
+    state: link
+    force: yes
+  with_items:
+    - devices
+    - housekeeping
+    - parameters
+    - subsystem_pool
+    - subsystem
+    - fm
+    - safety_check
+    - rf_packet
+  when: not (( item == "safety_check" and subsystem != "EPS") or
+             ( item == "rf_packet" and subsystem != "COMMS"))
+
+- name: Link core files {{ subsystem }}
+  file:
+    src: '{{ pq_workspace }}/PQ9_bus/core/{{ item }}.c'
+    dest: '{{ pq_workspace }}/{{ subsystem }}/ttc/{{ item }}.c'
+    state: link
+    force: yes
+  with_items:
+    - function_management_service
+    - housekeeping_service
+    - packet_stats
+    - packet_utilities
+    - ping_service
+    - pkt_pool
+    - verification_service
+    - queue
+    - testing
+    - en_data_service
+  when: not ( item == "en_data_service" and
+            (subsystem != "OBC" and subsystem != "COMMS"))

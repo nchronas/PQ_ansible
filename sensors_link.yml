@@ -1,7 +1,7 @@
 ---
-- name: Creating links for sensor {{ config.sen }}
+- name: Creating links for sensor {{ config.sensor }}
   file:
-    src: '{{ pq_workspace }}/{{ config.sen }}/{{ config.sen }}.c'
-    dest: '{{ pq_workspace }}/{{ item }}/libs/{{ config.sen }}.c'
+    src: '{{ pq_workspace }}/{{ config.sensor }}/{{ config.sensor }}.c'
+    dest: '{{ pq_workspace }}/{{ item }}/libs/{{ config.sensor }}.c'
     state: link
-  with_items: '{{ config.sub }}'
+  with_items: '{{ config.subsystem }}'
